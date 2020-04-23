@@ -1,0 +1,104 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>MVP COUP STATE</title>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+	<form id="chat">
+
+
+		<button type="button" onclick="criarSala()">Criar Sala</button>
+
+		<!-- <input type="text" name="username"  placeholder="Digite seu usuário">
+			<div class="messages"></div> -->
+
+		<br /><br />
+
+		<input type="text" name="idSalaHash" placeholder="Digite a sala desejada" />
+		<input type="text" name="username" placeholder="Digite seu usuário" />
+		<button type="button" onclick="adicionarJogador()">Entrar na sala</button>
+
+
+		<br /><br />
+
+		<button type="button" onclick="comecarJogo()">Começar o jogo</button>
+
+
+		<br /><br />
+		<hr /> <br />
+
+		<div id="listarSalasInfo"></div>
+		<div id="jogadorLogado"></div>
+
+	</form>
+
+	<script type="text/javascript">
+		let socket = io('http://localhost:3000');
+
+		let idJogadorLogado = null;
+
+		socket.on('idJogador', (objRetorno) => {
+			console.log('[Frontend - on(idJogador)] ==>', objRetorno);
+			idJogadorLogado = objRetorno.idJogador;
+
+		});
+
+		// Criar Sala
+		// Criar Sala
+		// Criar Sala
+		criarSala = () => {
+			socket.emit('criarSala', { username: 'Player Master' });
+		}
+
+		socket.on('salaCriada', (objRetorno) => {
+			console.log('[Frontend - on(salaCriada)] ==>', objRetorno);
+			$('#listarSalasInfo').append(`<strong>Sala ID hash:</strong><span id="${objRetorno.idSalaHash}"> ${objRetorno.idSalaHash}</span><br/>`);
+		});
+
+		// adicionarJogador
+		// adicionarJogador
+		// adicionarJogador
+		adicionarJogador = () => {
+			let username = $("input[name=username]").val().trim();
+			let idSalaHash = $("input[name=idSalaHash]").val().trim();
+
+			$('#jogadorLogado').append(`
+				<strong>Id logado:</strong><span"> ${idJogadorLogado} </span> -----
+				<strong>Jogador logado:</strong><span"> ${username}</span><br/>
+			`);
+
+			socket.emit('adicionarJogador', { username, idSalaHash });
+		}
+
+		socket.on('jogadorAdicionado', (objRetorno) => {
+			console.log('[Frontend - on(jogadorAdicionado)] ==>', objRetorno);
+		});
+
+		// INICIALIZA O JOGO
+		// INICIALIZA O JOGO
+		// INICIALIZA O JOGO
+		comecarJogo = () => {
+
+			socket.emit('comecarJogo', { idJogadorLogado });
+		}
+
+		socket.on('jogoComecou', (objRetorno) => {
+			console.log('[Frontend - on(jogoComecou)] ==>', objRetorno);
+		});
+
+
+
+
+
+	</script>
+
+</body>
+
+</html>
